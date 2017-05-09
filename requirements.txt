@@ -4,3 +4,7 @@ itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
 Werkzeug==0.12.1
+beautifulsoup4==4.5.3
+html5lib
+konlpy==0.4.4
+JPype1-py3==0.5.5.2
