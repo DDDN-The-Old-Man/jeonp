@@ -1,28 +1,29 @@
 from module.extractor import NaverExtractor
 from module import strlib
+from lib import database as db
 import sys, pickle
 
-arg_set = [
-            ['박근혜', 'park.pickle', '%B9%DA%B1%D9%C7%FD', 1], \
-            ['최순실', 'choi.pickle', '%C3%D6%BC%F8%BD%C7', 1], \
-            ['세월호', 'sewol.pickle', '%BC%BC%BF%F9%C8%A3', 1], \
-            #['김정은', 'kje.pickle', '%B1%E8%C1%A4%C0%BA', 1], \
-            #['반기문', 'bgm.pickle', '%B9%DD%B1%E2%B9%AE', 1], \
-            #['노무현', 'nmh.pickle', '%B3%EB%B9%AB%C7%F6', 1], \
-            #['4월 27일', 'war.pickle', '4%BF%F9+27%C0%CF', 1], \
-            #['중국군', 'cnarmy.pickle', '%C1%DF%B1%B9%B1%BA', 1]
-          ]
+class Crawler:
+    arg_set = [
+                ['박근혜', '%B9%DA%B1%D9%C7%FD', 1], \
+                ['최순실', '%C3%D6%BC%F8%BD%C7', 1], \
+                ['세월호', '%BC%BC%BF%F9%C8%A3', 1], \
+              ]
 
-if __name__ == "__main__":
-    for argv in arg_set:
-        output_file = argv[1]
-        query_str = argv[2]
-        to_page = argv[3]
+    @staticmethod
+    def load():
+        for argv in Crawler.arg_set:
+            query_str = argv[1]
+            to_page = argv[2]
 
-        e = NaverExtractor()
-        result = e.search_news(query_str, to_page)
-        with open(output_file, 'wb') as f:
-            pickle.dump(result, f)
+            e = NaverExtractor()
+            result = e.search_news(query_str, to_page)
+            print (result)
+            for r in result:
+                db.query_db('insert into articles (body, url, created_at) values (?, ?, ?)', \
+                        [r['body'], r['url'], r['created_at']])
+            #with open(output_file, 'wb') as f:
+            #    pickle.dump(result, f)
 '''
 
 args2 = [['data/kje.pickle', '김정은, 전쟁 대비해 평양서 60만명 내보내'],

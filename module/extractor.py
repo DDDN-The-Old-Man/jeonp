@@ -1,9 +1,11 @@
 from bs4 import BeautifulSoup
 from bs4 import NavigableString
 from module import strlib
+from datetime import datetime
 import urllib.request
 import urllib.parse
 import time, random
+
 
 class Extractor:
     def load_html(self, url):
@@ -65,7 +67,12 @@ class NaverExtractor(Extractor):
                               .find('a', class_='go_naver') \
                               .get('href')
                     desc = elem.find('p', class_='dsc')
-                    news_result.append(self.load_body(url, ' '.join(desc.strings).strip()))
+                    body = self.load_body(url, ' '.join(desc.strings).strip())
+                    news_result.append({
+                            'body': body,
+                            'url': url,
+                            'created_at': str(datetime.now()),
+                        })
                 except Exception as e:
                     pass
             print(len(news_result))
