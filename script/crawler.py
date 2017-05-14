@@ -1,29 +1,43 @@
 from module.extractor import NaverExtractor
 from module import strlib
 from lib import database as db
-import sys, pickle
+import sys, pickle, hashlib
 
 class Crawler:
-    arg_set = [
-                ['박근혜', '%B9%DA%B1%D9%C7%FD', 1], \
-                ['최순실', '%C3%D6%BC%F8%BD%C7', 1], \
-                ['세월호', '%BC%BC%BF%F9%C8%A3', 1], \
+    ARG_SET = [
+                ['박근혜', '%B9%DA%B1%D9%C7%FD', 10000], \
+                ['최순실', '%C3%D6%BC%F8%BD%C7', 10000], \
+                ['세월호', '%BC%BC%BF%F9%C8%A3', 10000], \
               ]
+    INSERT_QUERY = 'INSERT INTO article (u_id, title, body, url) values (?, ?, ?, ?);'
 
     @staticmethod
     def load():
-        for argv in Crawler.arg_set:
+        res = db.query_db('select count(*) from article;')
+        for argv in Crawler.ARG_SET:
             query_str = argv[1]
             to_page = argv[2]
 
             e = NaverExtractor()
-            result = e.search_news(query_str, to_page)
-            print (result)
-            for r in result:
-                db.query_db('insert into articles (body, url, created_at) values (?, ?, ?)', \
-                        [r['body'], r['url'], r['created_at']])
-            #with open(output_file, 'wb') as f:
-            #    pickle.dump(result, f)
+            url = e.get_start_url(query_str)
+
+            for i in range(1, to_page):
+                result = e.search_news(url, i)
+                news_result = result['news_result']
+                next_url = result['next_url']
+                for r in news_result:
+                    u_id = hashlib.sha256(r['url'].encode('utf-8')).hexdigest()
+                    try:
+                        res = db.query_db(Crawler.INSERT_QUERY,
+                                          [u_id, r['title'], r['body'], r['url']] )
+                    except Exception as e:
+                        print('duplicated')
+                db.get_db().commit()
+                if next_url:
+                    url = next_url
+                else:
+                    break
+        print("SIZE: {}".format(res[0][0]))
 '''
 
 args2 = [['data/kje.pickle', '김정은, 전쟁 대비해 평양서 60만명 내보내'],

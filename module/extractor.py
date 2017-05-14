@@ -52,48 +52,47 @@ class Extractor:
 class NaverExtractor(Extractor):
     NAVER_SEARCH_URL = 'http://news.naver.com/main/search/search.nhn?query='
 
-    def search_news(self, query, max_pages):
-        full_url = NaverExtractor.NAVER_SEARCH_URL + query
+    def get_start_url(self, query):
+        return NaverExtractor.NAVER_SEARCH_URL + query
 
+    def search_news(self, full_url, page_id):
         news_result = []
-        current_page = 1
-        while full_url:
-            html_text = self.load_html(full_url)
-            soup = BeautifulSoup(html_text, 'html5lib')
-            for elem in soup.find('div', class_='srch_result_area') \
-                            .find_all('div', class_='ct'):
-                try:
-                    url = elem.find('div', class_='info') \
-                              .find('a', class_='go_naver') \
-                              .get('href')
-                    desc = elem.find('p', class_='dsc')
-                    body = self.load_body(url, ' '.join(desc.strings).strip())
+        html_text = self.load_html(full_url)
+        soup = BeautifulSoup(html_text, 'html5lib')
+        for elem in soup.find('div', class_='srch_result_area') \
+                        .find_all('div', class_='ct'):
+            try:
+                url = elem.find('div', class_='info') \
+                          .find('a', class_='go_naver') \
+                          .get('href')
+                desc = elem.find('p', class_='dsc')
+                body = self.load_body(url, ' '.join(desc.strings).strip())
+                title = elem.find('div', class_='info') \
+                            .find('div', class_='head_social share_area') \
+                            .find('a').get('data-title')
+                if url and title and body:
                     news_result.append({
+                            'title': title,
                             'body': body,
                             'url': url,
-                            'created_at': str(datetime.now()),
                         })
-                except Exception as e:
-                    pass
-            print(len(news_result))
-            next_url = None
-            for elem in soup.find('div', class_='paging').children:
-                try:
-                    href = elem.get('href')
-                    if not href:
-                        continue
-                    href = 'http://news.naver.com' + href
-                    parsed_url = urllib.parse.urlparse(href)
-                    page_num = int(urllib.parse.parse_qs(parsed_url.query)['page'][0])
-                    if page_num == current_page + 1:
-                        next_url = href
-                except Exception as e:
-                    pass
-            print(next_url)
-            full_url = next_url
-            current_page += 1
-            if current_page > max_pages:
-                break
-        return news_result
+            except Exception as e:
+                pass
 
-
+        next_url = None
+        for elem in soup.find('div', class_='paging').children:
+            try:
+                href = elem.get('href')
+                if not href:
+                    continue
+                href = 'http://news.naver.com' + href
+                parsed_url = urllib.parse.urlparse(href)
+                page_num = int(urllib.parse.parse_qs(parsed_url.query)['page'][0])
+                if page_num == current_page + 1:
+                    next_url = href
+            except Exception as e:
+                pass
+        return {
+            'news_result': news_result,
+            'next_url': next_url
+            }

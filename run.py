@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask import request, _app_ctx_stack
 from flask_script import Manager
 from script.crawler import Crawler
+import lib.database as db
 
 app = Flask(__name__)
 manager = Manager(app)
@@ -18,10 +19,8 @@ def search():
     return query
 
 @app.teardown_appcontext
-def close_connection(exception):
-    top = _app_ctx_stack.top
-    if hasattr(top, 'sqlite_db'):
-        top.sqlite_db.close()
+def close_app(exception):
+    db.close_connection()
 
 @manager.command
 def hello():
