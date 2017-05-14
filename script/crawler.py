@@ -22,7 +22,9 @@ class Crawler:
             url = e.get_start_url(query_str)
 
             for i in range(1, to_page):
+                print("PAGE: {}".format(i))
                 result = e.search_news(url, i)
+                print(result)
                 news_result = result['news_result']
                 next_url = result['next_url']
                 for r in news_result:
