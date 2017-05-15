@@ -3,7 +3,7 @@ from flask import Flask, render_template
 from flask import request, _app_ctx_stack
 from flask_script import Manager
 from script.crawler import Crawler
-import lib.database as db
+import module.database as db
 
 app = Flask(__name__)
 manager = Manager(app)
@@ -23,8 +23,16 @@ def close_app(exception):
     db.close_connection()
 
 @manager.command
-def hello():
+def crawler():
     Crawler.load()
+
+@manager.command
+def nlp_worker():
+    NLPWorker.load()
+
+@manager.command
+def context_worker():
+    ContextWorker.load()
 
 if __name__ == '__main__':
     print(len(sys.argv))
