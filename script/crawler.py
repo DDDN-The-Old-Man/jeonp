@@ -5,15 +5,14 @@ import sys, pickle, hashlib
 
 class Crawler:
     ARG_SET = [
-                ['박근혜', '%B9%DA%B1%D9%C7%FD', 2], \
-                ['최순실', '%C3%D6%BC%F8%BD%C7', 2], \
-                ['세월호', '%BC%BC%BF%F9%C8%A3', 2], \
+                ['박근혜', '%B9%DA%B1%D9%C7%FD', 50000], \
+                ['최순실', '%C3%D6%BC%F8%BD%C7', 50000], \
+                ['세월호', '%BC%BC%BF%F9%C8%A3', 50000], \
               ]
     INSERT_QUERY = 'INSERT INTO article (u_id, title, body, url, created_at) values (?, ?, ?, ?, ?);'
 
     @staticmethod
     def load():
-        res = db.query_db('select count(*) from article;')
         for argv in Crawler.ARG_SET:
             query_str = argv[1]
             to_page = argv[2]
@@ -24,7 +23,7 @@ class Crawler:
             for i in range(1, to_page):
                 print("PAGE: {}".format(i))
                 result = e.search_news(url, i)
-                print(result)
+                print("RESULT COUNT: {}".format(len(result)))
                 news_result = result['news_result']
                 next_url = result['next_url']
                 for r in news_result:
@@ -39,7 +38,6 @@ class Crawler:
                     url = next_url
                 else:
                     break
-        print("SIZE: {}".format(res[0][0]))
 '''
 
 args2 = [['data/kje.pickle', '김정은, 전쟁 대비해 평양서 60만명 내보내'],
