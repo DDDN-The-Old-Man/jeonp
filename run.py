@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask import request, _app_ctx_stack
 from flask_script import Manager
 from script.crawler import Crawler
+from script.nlp_worker import NLPWorker
 import module.database as db
 
 app = Flask(__name__)
@@ -28,7 +29,7 @@ def crawler():
 
 @manager.command
 def nlp_worker():
-    NLPWorker.load()
+    NLPWorker.work()
 
 @manager.command
 def context_worker():
