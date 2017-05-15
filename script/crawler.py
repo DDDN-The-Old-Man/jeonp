@@ -33,7 +33,7 @@ class Crawler:
                         res = db.query_db(Crawler.INSERT_QUERY,
                                           [u_id, r['title'], r['body'], r['url'], r['created_at']] )
                     except Exception as e:
-                        print('duplicated')
+                        print(e)
                 db.get_db().commit()
                 if next_url:
                     url = next_url
