@@ -5,6 +5,8 @@ CREATE TABLE article (
   body        TEXT        NOT NULL,
   url         TEXT        NOT NULL,
   created_at  DATETIME    NOT NULL,
+  context_b   BOOLEAN     DEFAULT 0,
+  parse_b     BOOLEAN     DEFAULT 0,
   CONSTRAINT unique_article UNIQUE (u_id)
 );
 
