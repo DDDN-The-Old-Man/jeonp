@@ -36,6 +36,7 @@ class Extractor:
         best_val = 0
         best_body = None
 
+        created_at = soup.find('div', class_='sponsor').find('span', class_='t11').string
         for elem in soup.find_all('div', id='articleBodyContents'):
             text_set = []
             for x in elem.children:
@@ -46,7 +47,7 @@ class Extractor:
             if sim_val > best_val:
                 best_body = text
                 best_val = sim_val
-        return best_body
+        return [created_at, best_body]
 
 
 class NaverExtractor(Extractor):
@@ -66,12 +67,13 @@ class NaverExtractor(Extractor):
                           .find('a', class_='go_naver') \
                           .get('href')
                 desc = elem.find('p', class_='dsc')
-                body = self.load_body(url, ' '.join(desc.strings).strip())
+                created_at, body = self.load_body(url, ' '.join(desc.strings).strip())
                 title = elem.find('div', class_='info') \
                             .find('div', class_='head_social share_area') \
                             .find('a').get('data-title')
                 if url and title and body:
                     news_result.append({
+                            'created_at': created_at,
                             'title': title,
                             'body': body,
                             'url': url,

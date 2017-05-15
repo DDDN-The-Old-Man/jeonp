@@ -4,6 +4,7 @@ CREATE TABLE article (
   title       TEXT        NOT NULL,
   body        TEXT        NOT NULL,
   url         TEXT        NOT NULL,
+  created_at  DATETIME    NOT NULL,
   CONSTRAINT unique_article UNIQUE (u_id)
 );
 

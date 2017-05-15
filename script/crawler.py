@@ -5,11 +5,11 @@ import sys, pickle, hashlib
 
 class Crawler:
     ARG_SET = [
-                ['박근혜', '%B9%DA%B1%D9%C7%FD', 10000], \
-                ['최순실', '%C3%D6%BC%F8%BD%C7', 10000], \
-                ['세월호', '%BC%BC%BF%F9%C8%A3', 10000], \
+                ['박근혜', '%B9%DA%B1%D9%C7%FD', 2], \
+                ['최순실', '%C3%D6%BC%F8%BD%C7', 2], \
+                ['세월호', '%BC%BC%BF%F9%C8%A3', 2], \
               ]
-    INSERT_QUERY = 'INSERT INTO article (u_id, title, body, url) values (?, ?, ?, ?);'
+    INSERT_QUERY = 'INSERT INTO article (u_id, title, body, url, created_at) values (?, ?, ?, ?, ?);'
 
     @staticmethod
     def load():
@@ -31,7 +31,7 @@ class Crawler:
                     u_id = hashlib.sha256(r['url'].encode('utf-8')).hexdigest()
                     try:
                         res = db.query_db(Crawler.INSERT_QUERY,
-                                          [u_id, r['title'], r['body'], r['url']] )
+                                          [u_id, r['title'], r['body'], r['url'], r['created_at']] )
                     except Exception as e:
                         print('duplicated')
                 db.get_db().commit()
