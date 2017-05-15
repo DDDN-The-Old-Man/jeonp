@@ -90,7 +90,7 @@ class NaverExtractor(Extractor):
                 href = 'http://news.naver.com' + href
                 parsed_url = urllib.parse.urlparse(href)
                 page_num = int(urllib.parse.parse_qs(parsed_url.query)['page'][0])
-                if page_num == current_page + 1:
+                if page_num == page_id + 1:
                     next_url = href
             except Exception as e:
                 pass

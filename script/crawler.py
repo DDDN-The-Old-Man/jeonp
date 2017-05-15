@@ -17,12 +17,12 @@ class Crawler:
             query_str = argv[1]
             to_page = argv[2]
 
-            e = NaverExtractor()
-            url = e.get_start_url(query_str)
+            extractor = NaverExtractor()
+            url = extractor.get_start_url(query_str)
 
             for i in range(1, to_page):
                 print("PAGE: {}".format(i))
-                result = e.search_news(url, i)
+                result = extractor.search_news(url, i)
                 print("RESULT COUNT: {}".format(len(result)))
                 news_result = result['news_result']
                 next_url = result['next_url']
