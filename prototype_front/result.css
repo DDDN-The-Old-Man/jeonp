@@ -35,8 +35,8 @@ body {
 }
 
 div.container {
-  position: relative;
-  top: 30%;
+    position: relative;
+    top: 30%;
 }
 
 h1.big-header {
@@ -45,4 +45,3 @@ h1.big-header {
 .no-margin-on-top {
     margin-top : 0;
 }
-
