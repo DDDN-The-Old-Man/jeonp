@@ -5,9 +5,10 @@ import sys, pickle, hashlib
 
 class Crawler:
     ARG_SET = [
-                ['박근혜', '%B9%DA%B1%D9%C7%FD', 50000], \
-                ['최순실', '%C3%D6%BC%F8%BD%C7', 50000], \
-                ['세월호', '%BC%BC%BF%F9%C8%A3', 50000], \
+                ['박근혜', '%B9%DA%B1%D9%C7%FD', 500], \
+                ['최순실', '%C3%D6%BC%F8%BD%C7', 500], \
+                ['세월호', '%BC%BC%BF%F9%C8%A3', 500], \
+                ['문재인', '%BC%BC%BF%F9%C8%A3', 500], \
               ]
     INSERT_QUERY = 'INSERT INTO article (u_id, title, body, url, created_at) values (?, ?, ?, ?, ?);'
 
