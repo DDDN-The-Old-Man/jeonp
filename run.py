@@ -4,7 +4,9 @@ from flask import request, _app_ctx_stack
 from flask_script import Manager
 from script.crawler import Crawler
 from script.nlp_worker import NLPWorker
+from script.context_worker import ContextWorker
 import module.database as db
+from module.finder import Finder
 
 app = Flask(__name__)
 manager = Manager(app)
@@ -17,7 +19,8 @@ def root():
 @app.route('/search', methods=['POST'])
 def search():
     query = request.form.get('q')
-    return query
+    res = Finder.search(query)
+    return str(res)
 
 @app.teardown_appcontext
 def close_app(exception):
@@ -33,7 +36,7 @@ def nlp_worker():
 
 @manager.command
 def context_worker():
-    ContextWorker.load()
+    ContextWorker.work()
 
 if __name__ == '__main__':
     print(len(sys.argv))
