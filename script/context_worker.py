@@ -26,8 +26,8 @@ class ContextWorker():
                     for d in dat:
                         if d[0] in ContextWorker.fake_words:
                             fake_cnt += 1
-                    if context_val < float(fake_cnt) / len(dat):
-                        context_val = float(fake_cnt) / len(dat)
+                    if context_val < float(fake_cnt) / (len(dat) + 1):
+                        context_val = float(fake_cnt) / (len(dat) + 1)
 
                 db.query_db('INSERT INTO context (id, context_val) values (?, ?)', \
                             [id_val, context_val])
