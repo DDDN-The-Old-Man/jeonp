@@ -38,8 +38,11 @@ class Finder:
         if not max_a_id:
             return 'NOT FOUND'
 
-        res = db.query_db(Finder.CONTEXT_QUERY, [max_a_id])
-        ctx_val = res[-1][0]
+        try:
+            res = db.query_db(Finder.CONTEXT_QUERY, [max_a_id])
+            ctx_val = res[-1][0]
+        except:
+            ctx_val = 0.0
 
         adat = db.query_db('SELECT id, title, body, url FROM article WHERE id = ?', [max_a_id])
         res = { 'sim_val': max_sim, 'context_val': ctx_val }
