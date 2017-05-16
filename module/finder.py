@@ -4,8 +4,8 @@ from module.strlib import *
 import json
 
 class Finder:
-    SEARCH_QUERY = 'SELECT id, body FROM article WHERE id > ? AND context_b = 1 AND parse_b = 1 ORDER BY id ASC LIMIT 100'
-    PARSE_QUERY = 'SELECT id, a_id, parsed FROM parsed_article WHERE a_id = ?'
+    SEARCH_QUERY = 'SELECT id, body FROM article WHERE id > ? AND context_b = 1 AND parse_b = 1 ORDER BY id ASC LIMIT 1000'
+    PARSE_QUERY = 'SELECT id, a_id, parsed FROM parsed_article WHERE a_id in ({})'
     CONTEXT_QUERY = 'SELECT context_val FROM context WHERE id = ?'
 
     @staticmethod
@@ -19,11 +19,14 @@ class Finder:
             res = db.query_db(Finder.SEARCH_QUERY, [start_id])
             if len(res) == 0:
                 break
-            sentences = []
-            for a_id, _ in res:
-                if start_id < a_id:
-                    start_id = a_id
-                sentences += db.query_db(Finder.PARSE_QUERY, [a_id])
+
+            ids = list(map(lambda x: x[0], res))
+            if start_id < max(ids):
+                start_id = max(ids)
+            ids = list(map(lambda x: str(x), ids))
+            ids_str = ",".join(ids)
+
+            sentences = db.query_db(Finder.PARSE_QUERY.format(ids_str))
 
             for o_id, a_id, js in sentences:
                 dat = json.loads(js)
