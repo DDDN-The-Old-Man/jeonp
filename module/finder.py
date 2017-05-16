@@ -32,6 +32,8 @@ class Finder:
                 if max_sim < sim:
                     max_sim = sim
                     max_a_id = a_id
+        if not max_a_id:
+            return 'NOT FOUND'
 
         res = db.query_db(Finder.CONTEXT_QUERY, [max_a_id])
         ctx_val = res[-1][0]
