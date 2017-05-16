@@ -4,36 +4,71 @@
     <meta charset="UTF-8">
     <title>검색 결과</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="search.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/result.css">
 </head>
 <body>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-4 col-xs-4">
+        <div class="col-md-4 col-xs-4 label-title align-middle">
             <h1> 출처 판독기 </h1>
         </div>
 
-        <div class="col-md-8 col-xs-8" id="custom-search-input">
+        <div class="col-md-8 col-xs-8 align-middle" id="custom-search-input">
             <div class="input-group">
                 <input type="text" class="form-control input-lg" placeholder="문재인은 금괴를 보유하고 있다!?" />
-                <span class="input-group-btn">
-                    <button class="btn btn-info btn-lg" type="button" id="searchButton">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </span>
+                <button type="button" class="btn btn-outline-primary">
+                   <span class="glyphicon glyphicon-search" aria-hidden="true" aria-label="search"/>Search
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row result-area">
         <div class="col-md-6 col-xs-6">
             <h3> 검색 결과 </h3>
+            <div class="search-result">
+                <!-- 예시 아이템 1 -->
+                <div class="result-item rounded row bg-faded clickable">
+                    <div class="item-content col-md-9 col-xs-9">
+                        <p class="item-title"> JTBC 뉴스룸' 문재인 금괴''안철수 조부 친일파' 등 가짜뉴스 3만건
+                        </p>
+                        <span class="item-source-press">신문사</span> - <span class="item-date ">2016년 12월 20일 </span>
+                    </div>
+                    <div class="col-md-3 col-xs-3">
+                        <div class="item-fake-score bg-danger text-white">
+                            <p>가짜점수<br/>
+                                98</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 예시 아이템 2 -->
+                <div class="result-item rounded row bg-faded clickable">
+                    <div class="item-content col-md-9 col-xs-9">
+                        <p class="item-title"> CS408 수업 매우 재미있는 것으로 밝혀져
+                        </p>
+                        <span class="item-source-press">신문사</span> - <span class="item-date ">2016년 12월 20일 </span>
+                    </div>
+                    <div class="col-md-3 col-xs-3">
+                        <div class="item-fake-score bg-success text-white">
+                            <p>가짜점수<br/>
+                                2</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
 
         </div>
         <div class="col-md-6 col-xs-6">
             <h3> 네이버 결과 </h3>
+            <div class="search-result">
+
+
+            </div>
         </div>
     </div>
 </div>
