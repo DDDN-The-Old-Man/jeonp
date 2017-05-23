@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 from module.extractor import NaverExtractor
 from module import strlib
 from module import database as db
