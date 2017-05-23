@@ -16,11 +16,15 @@ manager = Manager(app)
 def root():
     return render_template('search.html')
 
-@app.route('/search', methods=['POST'])
+@app.route('/search', methods=['GET', 'POST'])
 def search():
     query = request.form.get('q')
-    res = Finder.search(query)
-    return str(res)
+    if query != None:
+        res = Finder.search(query)
+    else:
+        res = ""
+    # TODO : do some configuration and make the result clear.
+    return render_template('result.html', data=str(res))
 
 @app.teardown_appcontext
 def close_app(exception):
