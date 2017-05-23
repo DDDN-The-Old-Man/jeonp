@@ -31,11 +31,15 @@ class Finder:
                 sim = get_similarity(q, dat)
                 if sim > Finder.SIM_DEADLINE:
                     result.append([sim, a_id])
+            break
 
         result2 = []
         for sim, a_id in result:
+            '''
             res = db.query_db(Finder.CONTEXT_QUERY, [a_id])
             ctx_val = res[-1][0]
+            '''
+            ctx_val = 0.1
             adat = db.query_db('SELECT id, title, body, url FROM article WHERE id = ?', [a_id])
             res = { 'sim_val': sim, 'context_val': ctx_val }
             res['id'], res['title'], res['body'], res['url'] = adat[-1]
