@@ -7,6 +7,7 @@ from script.nlp_worker import NLPWorker
 from script.context_worker import ContextWorker
 import module.database as db
 from module.finder import Finder
+import json
 
 app = Flask(__name__)
 manager = Manager(app)
@@ -22,9 +23,10 @@ def search():
     if query != None:
         res = Finder.search(query)
     else:
-        res = ""
+        res = {}
+
     # TODO : do some configuration and make the result clear.
-    return render_template('result.html', data=str(res))
+    return render_template('result.html', result=[res])
 
 @app.teardown_appcontext
 def close_app(exception):
