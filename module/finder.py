@@ -15,7 +15,7 @@ class Finder:
         start_id = -1
 
         result = []
-        while True:
+        while len(result) < 5:
             res = db.query_db(Finder.SEARCH_QUERY, [start_id])
             if len(res) == 0:
                 break
@@ -34,7 +34,6 @@ class Finder:
                 sim = get_similarity(q, dat)
                 if sim > Finder.SIM_DEADLINE:
                     result.append([sim, a_id])
-            break
 
         result2 = []
         for sim, a_id in result:
