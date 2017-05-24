@@ -23,6 +23,7 @@ def search():
         res = Finder.search(query)
     else:
         res = ""
+    print(res)
     # TODO : do some configuration and make the result clear.
     return render_template('result.html', data=str(res))
 
