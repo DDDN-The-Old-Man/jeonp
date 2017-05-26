@@ -24,9 +24,16 @@ def search():
         res = Finder.search(query)
     else:
         res = {}
-    print(res)
     # TODO : do some configuration and make the result clear.
-    return render_template('result.html', result=[res])
+    ret = json.loads(res)
+
+
+    print(type(ret))
+    for elem in ret :
+        print(elem)
+        print(type(elem))
+
+    return render_template('result.html', results=ret)
 
 @app.teardown_appcontext
 def close_app(exception):
