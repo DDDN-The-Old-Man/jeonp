@@ -5,11 +5,14 @@ import json
 from time import time
 from random import random
 from multiprocessing import Process, Queue
+import hashlib
 
 class Finder:
     SEARCH_QUERY = 'SELECT id, body FROM article WHERE id > ? AND context_b = 1 AND parse_b = 1 ORDER BY id ASC LIMIT 10000'
     PARSE_QUERY = 'SELECT id, a_id, parsed FROM parsed_article WHERE a_id in ({})'
     CONTEXT_QUERY = 'SELECT context_val FROM context WHERE id = ?'
+    CACHE_QUERY = 'SELECT result FROM cached_result WHERE hash_id = ?'
+    CACHE_INSERT_QUERY = 'INSERT INTO cached_result (hash_id, result) values (?, ?);'
     SIM_DEADLINE = 0.6
 
     @staticmethod
@@ -28,10 +31,14 @@ class Finder:
 
     @staticmethod
     def search(text):
-        st = time()
         q = NLPParser.parse(text)
         start_id = -1
-        tt = time()-st; print(tt); st=time()
+
+        hash_id = hashlib.sha256(str(q).encode('utf-8')).hexdigest()
+        result = db.query_db(Finder.CACHE_QUERY, [hash_id])
+        if len(result) > 0:
+            result2 = [json.loads(x[0]) for x in result]
+            return json.dumps(result2, indent=4, separators=(',', ': '))
 
         result = []
         while len(result) < 10:
@@ -73,4 +80,6 @@ class Finder:
             res = { 'sim_val': sim, 'context_val': ctx_val }
             res['id'], res['title'], res['body'], res['url'] = adat[-1]
             result2.append(res)
+            db.query_db(Finder.CACHE_INSERT_QUERY, [hash_id, json.dumps(res)])
+            db.get_db().commit()
         return json.dumps(result2, indent=4, separators=(',', ': '))

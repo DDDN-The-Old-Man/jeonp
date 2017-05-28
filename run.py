@@ -27,12 +27,6 @@ def search():
     # TODO : do some configuration and make the result clear.
     ret = json.loads(res)
 
-
-    print(type(ret))
-    for elem in ret :
-        print(elem)
-        print(type(elem))
-
     return render_template('result.html', results=ret)
 
 @app.teardown_appcontext

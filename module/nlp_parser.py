@@ -8,7 +8,6 @@ class NLPParser():
     @staticmethod
     def parse(text):
         corpus = NLPParser.nlplib.pos(text)
-        print(corpus)
         return corpus
 
     @staticmethod
