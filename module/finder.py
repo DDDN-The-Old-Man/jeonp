@@ -76,9 +76,9 @@ class Finder:
             ctx_val = res[-1][0]
             '''
             ctx_val = 0.1 * random()
-            adat = db.query_db('SELECT id, title, body, url FROM article WHERE id = ?', [a_id])
+            adat = db.query_db('SELECT id, title, body, url, created_at FROM article WHERE id = ?', [a_id])
             res = { 'sim_val': sim, 'context_val': ctx_val }
-            res['id'], res['title'], res['body'], res['url'] = adat[-1]
+            res['id'], res['title'], res['body'], res['url'], res['c'= adat[-1]
             result2.append(res)
             db.query_db(Finder.CACHE_INSERT_QUERY, [hash_id, json.dumps(res)])
             db.get_db().commit()

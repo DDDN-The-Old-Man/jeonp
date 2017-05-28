@@ -39,7 +39,7 @@
                     <div class="item-content col-md-9 col-xs-9">
                         <p class="item-title"> {{ article.title }}
                         </p>
-                        <span class="item-source-press">신문사</span> - <span class="item-date ">2016년 12월 20일 </span>
+                        <span class="item-source-press">신문사</span> - <span class="item-date "> {{ article.created_at }} </span>
                     </div>
                     <div class="col-md-3 col-xs-3">
                         {% if article.context_val > 0.5 %}
