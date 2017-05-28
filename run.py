@@ -27,7 +27,7 @@ def search():
     # TODO : do some configuration and make the result clear.
     ret = json.loads(res)
 
-    return render_template('result.html', results=ret)
+    return render_template('result.html', results=ret, q=query)
 
 @app.teardown_appcontext
 def close_app(exception):
