@@ -59,6 +59,10 @@
 
             {% endfor %}
 
+                {% if results|length <= 0 %}
+                    <p> There is no article</p>
+                {% endif %}
+
 
             </div>
         </div>
