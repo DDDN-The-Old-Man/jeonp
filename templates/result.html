@@ -39,7 +39,8 @@
                     <div class="item-content col-md-9 col-xs-9">
                         <p class="item-title"> {{ article.title }}
                         </p>
-                        <span class="item-source-press">신문사</span> - <span class="item-date "> {{ article.created_at }} </span>
+                        <!--<span class="item-source-press">신문사</span> - <span class="item-date "> {{ article.created_at }} </span>-->
+                        <span class="item-date "> {{ article.created_at }} </span>
                     </div>
                     <div class="col-md-3 col-xs-3">
                         {% if article.context_val > 0.5 %}
@@ -48,7 +49,7 @@
                         <div class="item-fake-score bg-success text-white">
                         {% endif %}
                             <p>가짜점수<br/>
-                                {{ article.context_val * 100 }}</p>
+                                {{ '%0.2f' % (article.context_val * 100 | float ) }}</p>
                         </div>
                     </div>
                 </div>
