@@ -23,7 +23,7 @@ def search():
     if query != None:
         res = Finder.search(query)
     else:
-        res = {}
+        res = "{}"
     # TODO : do some configuration and make the result clear.
     ret = json.loads(res)
 
