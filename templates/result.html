@@ -34,6 +34,7 @@
             {% for article in results %}
                 {% if article.sim_val > 0 %}
                 <!-- 예시 아이템 1 -->
+                <a href="{{ article.url }}" style="text-decoration: none;">
                 <div class="result-item rounded row bg-faded clickable" href="{{ article.url }}">
                     <div class="item-content col-md-9 col-xs-9">
                         <p class="item-title"> {{ article.title }}
@@ -51,24 +52,12 @@
                         </div>
                     </div>
                 </div>
+                </a>
                 {% else %}
                 <p>{{ article.title }}</p>
                 {% endif %}
 
             {% endfor %}
-                <div class="result-item rounded row bg-faded clickable">
-                    <div class="item-content col-md-9 col-xs-9">
-                        <p class="item-title"> CS408 수업 매우 재미있는 것으로 밝혀져
-                        </p>
-                        <span class="item-source-press">신문사</span> - <span class="item-date ">2016년 12월 20일 </span>
-                    </div>
-                    <div class="col-md-3 col-xs-3">
-                        <div class="item-fake-score bg-danger text-white">
-                            <p>가짜점수<br/>
-                                98</p>
-                        </div>
-                    </div>
-                </div>
 
 
             </div>
