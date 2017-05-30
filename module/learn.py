@@ -1,4 +1,5 @@
 import csv
+import sqlite3
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn import metrics
 from sklearn.feature_extraction.text import CountVectorizer
@@ -6,6 +7,7 @@ from sklearn.feature_extraction.text import TfidfTransformer
 
 
 DATABASE = '../database.db'
+DB = sqlite3.connect(DATABASE)
 
 
 class TaggedBody:
@@ -62,7 +64,14 @@ def vectorize(tb):
     vectorizer = CountVectorizer()
     # tf_transformer = TfidfTransformer(use_idf=False)
     tb.tags = [0 if tag == 'F' else 1 for tag in tb.tags]
-    tb.data = vectorizer.fit_transform(tb.data)
+    # Use datas in DB to construct bag of words model
+    ARTICLE_QUERY = 'SELECT body FROM article'
+    cur = DB.execute(ARTICLE_QUERY)
+    db_data = cur.fetchall()
+    db_data = [body[0] for body in db_data]
+    vectorizer = vectorizer.fit(tb.data + db_data)
+    tb.data = vectorizer.transform(tb.data)
+    print (tb.data.shape)
     # tb.data = tf_transformer.fit_transform(tb.data)
 
 
