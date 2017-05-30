@@ -71,7 +71,6 @@ def vectorize(tb):
     db_data = [body[0] for body in db_data]
     vectorizer = vectorizer.fit(tb.data + db_data)
     tb.data = vectorizer.transform(tb.data)
-    print (tb.data.shape)
     # tb.data = tf_transformer.fit_transform(tb.data)
 
 
@@ -79,11 +78,11 @@ def vectorize(tb):
 def classify(tb):
     classifier = MultinomialNB()
     # Use odd number datasets as train set
-    classifier.fit(tb.data[1::2], tb.tags[1::2])
-    predicted = classifier.predict(tb.data[::2])
-    predicted_proba = classifier.predict_proba(tb.data[::2])
-    score = metrics.accuracy_score(tb.tags[::2], predicted)
-    report = metrics.classification_report(tb.tags[::2], predicted,
+    classifier.fit(tb.data[::2], tb.tags[::2])
+    predicted = classifier.predict(tb.data[1::2])
+    predicted_proba = classifier.predict_proba(tb.data[1::2])
+    score = metrics.accuracy_score(tb.tags[1::2], predicted)
+    report = metrics.classification_report(tb.tags[1::2], predicted,
             target_names=['F', 'T'])
     return (score, report, predicted_proba)
 
