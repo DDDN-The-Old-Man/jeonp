@@ -5,15 +5,16 @@ import json
 from time import time
 from random import random
 from multiprocessing import Process, Queue
+from module.simsen import SimSen
 import hashlib
 
 class Finder:
-    SEARCH_QUERY = 'SELECT id, body FROM article WHERE id > ? AND context_b = 1 AND parse_b = 1 ORDER BY id ASC LIMIT 10000'
+    SEARCH_QUERY = 'SELECT id, body FROM article WHERE id > ? AND context_b = 1 AND parse_b = 1 ORDER BY id ASC LIMIT 10'
     PARSE_QUERY = 'SELECT id, a_id, parsed FROM parsed_article WHERE a_id in ({})'
     CONTEXT_QUERY = 'SELECT context_val FROM context WHERE id = ?'
     CACHE_QUERY = 'SELECT result FROM cached_result WHERE hash_id = ?'
     CACHE_INSERT_QUERY = 'INSERT INTO cached_result (hash_id, result) values (?, ?);'
-    SIM_DEADLINE = 0.6
+    SIM_DEADLINE = 0.5
 
     @staticmethod
     def match(sentences, q, start, interval, result):
@@ -24,7 +25,7 @@ class Finder:
             i += interval
             dat = json.loads(js)
             dat = list(map(lambda x: tuple(x), dat))
-            sim = get_similarity(q, dat)
+            sim = SimSen.similarity(q, dat)
             if sim > Finder.SIM_DEADLINE:
                t.append([sim, a_id])
         result.put(t)
@@ -36,12 +37,13 @@ class Finder:
 
         hash_id = hashlib.sha256(str(q).encode('utf-8')).hexdigest()
         result = db.query_db(Finder.CACHE_QUERY, [hash_id])
-        if len(result) > 0:
+        if len(result) > 0 and False:
             result2 = [json.loads(x[0]) for x in result]
             return json.dumps(result2, indent=4, separators=(',', ': '))
 
+        start_time = time()
         result = []
-        while len(result) < 10:
+        while len(result) < 100 and time() - start_time < 10:
             res = db.query_db(Finder.SEARCH_QUERY, [start_id])
             if len(res) == 0:
                 break
@@ -69,7 +71,7 @@ class Finder:
             print('---------')
             print(len(result))
 
-        result2 = []
+        result_dict = {}
         for sim, a_id in result:
             '''
             res = db.query_db(Finder.CONTEXT_QUERY, [a_id])
@@ -78,8 +80,10 @@ class Finder:
             ctx_val = 0.1 * random()
             adat = db.query_db('SELECT id, title, body, url, created_at FROM article WHERE id = ?', [a_id])
             res = { 'sim_val': sim, 'context_val': ctx_val }
+            print (a_id, adat[-1][1], res)
             res['id'], res['title'], res['body'], res['url'], res['created_at'] = adat[-1]
-            result2.append(res)
+            result_dict[a_id] = res
             db.query_db(Finder.CACHE_INSERT_QUERY, [hash_id, json.dumps(res)])
             db.get_db().commit()
-        return json.dumps(result2, indent=4, separators=(',', ': '))
+
+        return json.dumps(list(result_dict.values()), indent=4, separators=(',', ': '))
