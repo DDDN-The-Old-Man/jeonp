@@ -14,7 +14,7 @@ class Finder:
     CONTEXT_QUERY = 'SELECT context_val FROM context WHERE id = ?'
     CACHE_QUERY = 'SELECT result FROM cached_result WHERE hash_id = ?'
     CACHE_INSERT_QUERY = 'INSERT INTO cached_result (hash_id, result) values (?, ?);'
-    SIM_DEADLINE = 0.5
+    SIM_DEADLINE = 0.6
 
     @staticmethod
     def match(sentences, q, start, interval, result):
@@ -27,7 +27,7 @@ class Finder:
             dat = list(map(lambda x: tuple(x), dat))
             sim = SimSen.similarity(q, dat)
             if sim > Finder.SIM_DEADLINE:
-               t.append([sim, a_id])
+               t.append([sim, a_id, dat])
         result.put(t)
 
     @staticmethod
@@ -43,7 +43,7 @@ class Finder:
 
         start_time = time()
         result = []
-        while len(result) < 100 and time() - start_time < 10:
+        while len(result) < 10000 and time() - start_time < 30:
             res = db.query_db(Finder.SEARCH_QUERY, [start_id])
             if len(res) == 0:
                 break
@@ -72,18 +72,18 @@ class Finder:
             print(len(result))
 
         result_dict = {}
-        for sim, a_id in result:
-            '''
+        for sim, a_id, sentence in result:
+            if a_id in result_dict and result_dict[a_id]['sim_val'] > sim:
+                continue
             res = db.query_db(Finder.CONTEXT_QUERY, [a_id])
             ctx_val = res[-1][0]
-            '''
-            ctx_val = 0.1 * random()
             adat = db.query_db('SELECT id, title, body, url, created_at FROM article WHERE id = ?', [a_id])
-            res = { 'sim_val': sim, 'context_val': ctx_val }
-            print (a_id, adat[-1][1], res)
+            res = { 'sim_val': sim, 'context_val': ctx_val, 'sentence': sentence}
             res['id'], res['title'], res['body'], res['url'], res['created_at'] = adat[-1]
             result_dict[a_id] = res
             db.query_db(Finder.CACHE_INSERT_QUERY, [hash_id, json.dumps(res)])
             db.get_db().commit()
 
-        return json.dumps(list(result_dict.values()), indent=4, separators=(',', ': '))
+        result_list = list(result_dict.values())
+        result_list = sorted(result_list, key=lambda x: -x['sim_val'])
+        return json.dumps(result_list, indent=4, separators=(',', ': '))

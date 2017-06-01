@@ -21,15 +21,24 @@ class SimSen():
     def similarity(q_seq, t_seq):
         ql = len(q_seq)
         tl = len(t_seq)
-        d = [ [ 0.0 for _ in range(tl+1) ] for _ in range(ql+1) ]
+        d = [ [ -1000000.0 for _ in range(tl+1) ] for _ in range(ql+1) ]
+        d[0][0] = 0.0
+        h = [ [ -1 for _ in range(tl+1) ] for _ in range(ql+1) ]
         for i in range(ql+1):
             for j in range(tl+1):
-                if i<ql and d[i+1][j] < d[i][j]:
-                    d[i+1][j] = d[i][j]
-                if j<tl and d[i][j+1] < d[i][j]:
-                    d[i][j+1] = d[i][j]
+                if i<ql and d[i+1][j] < d[i][j] - 0.1:
+                    d[i+1][j] = d[i][j] - 0.1
+                if j<tl and d[i][j+1] < d[i][j] - 0.01:
+                    d[i][j+1] = d[i][j] - 0.01
                 if i<ql and j<tl:
                     v = SimSen.sim_val(q_seq[i], t_seq[j])
+                    if v < 0.1:
+                        continue
+                    if d[i+1][j] < d[i][j] + v*0.3:
+                        d[i+1][j] = d[i][j] + v*0.3
+                    if d[i][j+1] < d[i][j] + v*0.3:
+                        d[i][j+1] = d[i][j] + v*0.3
                     if d[i+1][j+1] < d[i][j] + v:
                         d[i+1][j+1] = d[i][j] + v
-        return d[ql][tl] / (len(q_seq) + 1.0)
+
+        return d[ql][tl] / (len(q_seq) + 1)
