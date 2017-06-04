@@ -28,7 +28,7 @@
     </div>
 
     <div class="row result-area">
-        <div class="col-md-6 col-xs-6">
+        <div class="col-md-7 col-xs-7">
             <h3> 검색 결과 </h3>
             <div class="search-result">
             {% if results|length <= 0 %}
@@ -39,16 +39,24 @@
                     {% if article.sim_val > 0 %}
                     <!-- 예시 아이템 1 -->
                     <a href="{{ article.url }}" style="text-decoration: none;">
-                    <div class="result-item rounded row bg-faded clickable" href="{{ article.url }}">
-                        <div class="item-content col-md-9 col-xs-9">
+                    <div class="result-item rounded row clickable alert alert-danger" href="{{ article.url }}">
+                        <div class="item-content col-md-6 col-xs-6">
                             <p class="item-title"> {{ article.title }}
                             </p>
                             <!--<span class="item-source-press">신문사</span> - <span class="item-date "> {{ article.created_at }} </span>-->
                             <span class="item-date "> {{ article.created_at }} </span>
                         </div>
                         <div class="col-md-3 col-xs-3">
-                            <div class="item-fake-score bg-danger text-white">
-                                <p>메타 점수<br/>
+                            <div class="item-fake-score alert alert-success">
+                                <p> 검색 일치도 <br/>
+                                    {{ '%0.2f' % (article.sim_val * 100) }} %</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xs-3">
+                            <div class="item-fake-score alert alert-danger">
+                                <p>
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" />
+                                    메타 점수<br/>
                                     {{ '%0.2f' % (article.sim_val * article.context_val * 100 | float ) }} / 100 </p>
                             </div>
                         </div>
@@ -63,19 +71,27 @@
                     {% if article.sim_val > 0 %}
                     <!-- 예시 아이템 1 -->
                     <a href="{{ article.url }}" style="text-decoration: none;">
-                    <div class="result-item rounded row bg-faded clickable" href="{{ article.url }}">
-                        <div class="item-content col-md-9 col-xs-9">
+                    <div class="result-item rounded row clickable bg-faded" href="{{ article.url }}">
+                        <div class="item-content col-md-7 col-xs-7">
                             <p class="item-title"> {{ article.title }}
                             </p>
                             <!--<span class="item-source-press">신문사</span> - <span class="item-date "> {{ article.created_at }} </span>-->
                             <span class="item-date "> {{ article.created_at }} </span>
                         </div>
                         <div class="col-md-3 col-xs-3">
-                            <div class="item-fake-score bg-success text-white">
+                            <div class="item-fake-score alert alert-success">
                                 <p> 검색 일치도 <br/>
                                     {{ '%0.2f' % (article.sim_val * 100) }} %</p>
                             </div>
                         </div>
+                        <!--<div class="col-md-3 col-xs-3">-->
+                            <!--<div class="item-fake-score alert alert-danger">-->
+                                <!--<p>-->
+                                    <!--<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" />-->
+                                    <!--메타 점수<br/>-->
+                                    <!--{{ '%0.2f' % (article.sim_val * article.context_val * 100 | float ) }} / 100 </p>-->
+                            <!--</div>-->
+                        <!--</div>-->
                     </div>
                     </a>
                     {% else %}
@@ -86,7 +102,7 @@
             {% endif %}
             </div>
         </div>
-        <div class="col-md-6 col-xs-6">
+        <div class="col-md-5 col-xs-5">
             <div>
                 <h3> 메타 점수란? </h3>
                 <p> 특정 내용에 대해서 거짓임을 증명하는 기사를 메타가시라고 정의한다. <br/>
