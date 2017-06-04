@@ -31,45 +31,66 @@
         <div class="col-md-6 col-xs-6">
             <h3> 검색 결과 </h3>
             <div class="search-result">
-            {% for article in results %}
-                {% if article.sim_val > 0 %}
-                <!-- 예시 아이템 1 -->
-                <a href="{{ article.url }}" style="text-decoration: none;">
-                <div class="result-item rounded row bg-faded clickable" href="{{ article.url }}">
-                    <div class="item-content col-md-9 col-xs-9">
-                        <p class="item-title"> {{ article.title }}
-                        </p>
-                        <!--<span class="item-source-press">신문사</span> - <span class="item-date "> {{ article.created_at }} </span>-->
-                        <span class="item-date "> {{ article.created_at }} </span>
-                    </div>
-                    <div class="col-md-3 col-xs-3">
-                        {% if article.context_val > 0.5 %}
-                        <div class="item-fake-score bg-danger text-white">
-                        {% else %}
-                        <div class="item-fake-score bg-success text-white">
-                        {% endif %}
-                            <p>가짜점수<br/>
-                                {{ '%0.2f' % (article.context_val * 100 | float ) }} / 100</p>
+            {% if results|length <= 0 %}
+                <h2> 일치하는 기사가 없습니다 </h2>
+            {% else %}
+
+                {% for article in results if article.context_val > 0.5 %}
+                    {% if article.sim_val > 0 %}
+                    <!-- 예시 아이템 1 -->
+                    <a href="{{ article.url }}" style="text-decoration: none;">
+                    <div class="result-item rounded row bg-faded clickable" href="{{ article.url }}">
+                        <div class="item-content col-md-9 col-xs-9">
+                            <p class="item-title"> {{ article.title }}
+                            </p>
+                            <!--<span class="item-source-press">신문사</span> - <span class="item-date "> {{ article.created_at }} </span>-->
+                            <span class="item-date "> {{ article.created_at }} </span>
+                        </div>
+                        <div class="col-md-3 col-xs-3">
+                            <div class="item-fake-score bg-danger text-white">
+                                <p>메타 점수<br/>
+                                    {{ '%0.2f' % (article.sim_val * article.context_val * 100 | float ) }} / 100 </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                </a>
-                {% else %}
-                <p>{{ article.title }}</p>
-                {% endif %}
+                    </a>
+                    {% else %}
+                    <p>{{ article.title }}</p>
+                    {% endif %}
+                {% endfor %}
+                <br/>
+                {% for article in results if not article.context_val > 0.5 %}
+                    {% if article.sim_val > 0 %}
+                    <!-- 예시 아이템 1 -->
+                    <a href="{{ article.url }}" style="text-decoration: none;">
+                    <div class="result-item rounded row bg-faded clickable" href="{{ article.url }}">
+                        <div class="item-content col-md-9 col-xs-9">
+                            <p class="item-title"> {{ article.title }}
+                            </p>
+                            <!--<span class="item-source-press">신문사</span> - <span class="item-date "> {{ article.created_at }} </span>-->
+                            <span class="item-date "> {{ article.created_at }} </span>
+                        </div>
+                        <div class="col-md-3 col-xs-3">
+                            <div class="item-fake-score bg-success text-white">
+                                <p> 검색 일치도 <br/>
+                                    {{ '%0.2f' % (article.sim_val * 100) }} %</p>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                    {% else %}
+                    <p>{{ article.title }}</p>
+                    {% endif %}
+                {% endfor %}
 
-            {% endfor %}
-
-            {% if results|length <= 0 %}
-                <p> There is no article</p>
             {% endif %}
-                
             </div>
         </div>
         <div class="col-md-6 col-xs-6">
             <div>
-                <h3> 가짜점수란? </h3>
-                <p> 기사가 사용자가 검색한 정보를 가짜라고 언급하는지 아닌지, <a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier">Naive Bayesian Classification</a>을 통해 추정된 값. <mark>단어와 단어의 등장</mark>이 독립적이라고 가정하여 확률적으로 계산한다.
+                <h3> 메타 점수란? </h3>
+                <p> 특정 내용에 대해서 거짓임을 증명하는 기사를 메타가시라고 정의한다. <br/>
+                    기사가 사용자가 검색한 정보를 거짓라고 언급하는지 아닌지, <a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier">Naive Bayesian Classification</a>을 통해 추정된 값이 메타점수다. <mark>단어와 단어의 등장</mark>이 독립적이라고 가정하여 확률적으로 계산한다.
                 </p>
             </div>
             <br>
