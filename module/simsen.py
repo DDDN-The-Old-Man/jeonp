@@ -34,10 +34,6 @@ class SimSen():
                     v = SimSen.sim_val(q_seq[i], t_seq[j])
                     if v < 0.1:
                         continue
-                    if d[i+1][j] < d[i][j] + v*0.3:
-                        d[i+1][j] = d[i][j] + v*0.3
-                    if d[i][j+1] < d[i][j] + v*0.3:
-                        d[i][j+1] = d[i][j] + v*0.3
                     if d[i+1][j+1] < d[i][j] + v:
                         d[i+1][j+1] = d[i][j] + v
 
