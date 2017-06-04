@@ -82,10 +82,10 @@ class Finder:
             res = { 'sim_val': sim, 'context_val': ctx_val, 'sentence': sentence}
             res['id'], res['title'], res['body'], res['url'], res['created_at'] = adat[-1]
             result_dict[a_id] = res
-            db.query_db(Finder.CACHE_INSERT_QUERY, [hash_id, json.dumps(res)])
-            db.get_db().commit()
 
         result_list = list(result_dict.values())
         result_list = sorted(result_list, key=lambda x: -x['sim_val'])
+        db.query_db(Finder.CACHE_INSERT_QUERY, [hash_id, json.dumps(result_list)])
+        db.get_db().commit()
         print (result_list)
         return json.dumps(result_list, indent=4, separators=(',', ': '))
