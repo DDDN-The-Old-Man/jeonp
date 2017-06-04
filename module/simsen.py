@@ -36,5 +36,9 @@ class SimSen():
                         continue
                     if d[i+1][j+1] < d[i][j] + v:
                         d[i+1][j+1] = d[i][j] + v
-
-        return d[ql][tl] / (len(q_seq) + 1)
+        sim = d[ql][tl] / (len(q_seq) + 1)
+        if sim < 0.0:
+            sim = 0.0
+        if sim >= 1.0:
+            sim = 1.0 - sim*0.02
+        return sim

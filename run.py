@@ -7,6 +7,8 @@ from script.nlp_worker import NLPWorker
 from script.context_worker import ContextWorker
 import module.database as db
 from module.finder import Finder
+from module.simsen import SimSen
+from module.nlp_parser import NLPParser
 import json
 
 app = Flask(__name__)
@@ -33,6 +35,27 @@ def search():
     ret = json.loads(res)
 
     return render_template('result.html', results=ret, q=query)
+
+@app.route('/sentence_sim', methods=['GET', 'POST'])
+def sentence_sim():
+    if request.method == 'GET':
+        sen1 = request.args.get('sen1', '')
+        sen2 = request.args.get('sen2', '')
+    else:
+        sen1 = request.form.get('sen1', '')
+        sen2 = request.form.get('sen2', '')
+
+    q1 = NLPParser.parse(sen1)
+    q2 = NLPParser.parse(sen2)
+    result = {
+            'sen1': sen1,
+            'sen2': sen2,
+            'parsed_sen1': q1,
+            'parsed_sen2': q2,
+            'similarity': SimSen.similarity(q1, q2)
+            }
+    return json.dumps(result)
+
 
 @app.teardown_appcontext
 def close_app(exception):
