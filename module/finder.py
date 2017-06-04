@@ -9,7 +9,7 @@ from module.simsen import SimSen
 import hashlib
 
 class Finder:
-    SEARCH_QUERY = 'SELECT id, body FROM article WHERE id > ? AND context_b = 1 AND parse_b = 1 ORDER BY id ASC LIMIT 10'
+    SEARCH_QUERY = 'SELECT id, body FROM article WHERE id > ? AND context_b = 1 AND parse_b = 1 ORDER BY id ASC LIMIT 100'
     PARSE_QUERY = 'SELECT id, a_id, parsed FROM parsed_article WHERE a_id in ({})'
     CONTEXT_QUERY = 'SELECT context_val FROM context WHERE id = ?'
     CACHE_QUERY = 'SELECT result FROM cached_result WHERE hash_id = ?'
@@ -37,13 +37,13 @@ class Finder:
 
         hash_id = hashlib.sha256(str(q).encode('utf-8')).hexdigest()
         result = db.query_db(Finder.CACHE_QUERY, [hash_id])
-        if len(result) > 0 and False:
+        if len(result) > 0:
             result2 = [json.loads(x[0]) for x in result]
             return json.dumps(result2, indent=4, separators=(',', ': '))
 
         start_time = time()
         result = []
-        while len(result) < 10000 and time() - start_time < 30:
+        while len(result) < 10000 and time() - start_time < 60:
             res = db.query_db(Finder.SEARCH_QUERY, [start_id])
             if len(res) == 0:
                 break
@@ -52,6 +52,7 @@ class Finder:
                 start_id = max(ids)
             ids = list(map(lambda x: str(x), ids))
             ids_str = ",".join(ids)
+            print(ids_str)
 
             sentences = db.query_db(Finder.PARSE_QUERY.format(ids_str))
             p = []
@@ -86,4 +87,5 @@ class Finder:
 
         result_list = list(result_dict.values())
         result_list = sorted(result_list, key=lambda x: -x['sim_val'])
+        print (result_list)
         return json.dumps(result_list, indent=4, separators=(',', ': '))

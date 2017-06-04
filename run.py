@@ -19,12 +19,17 @@ def root():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    query = request.form.get('q')
+    if request.method == 'GET':
+        query = request.args.get('q', '')
+    else:
+        query = request.form.get('q')
     if query != None:
         res = Finder.search(query)
     else:
         res = "{}"
     # TODO : do some configuration and make the result clear.
+    if request.method == 'GET':
+        return res
     ret = json.loads(res)
 
     return render_template('result.html', results=ret, q=query)
